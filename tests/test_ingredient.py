@@ -24,8 +24,20 @@ def test_init_sets_fields(ingredient_type, name, price):
 
 
 @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-def test_getters_return_values(ingredient_type, name, price):
+def test_get_type_returns_type(ingredient_type, name, price):
     ingredient = Ingredient(ingredient_type, name, price)
     assert ingredient.get_type() == ingredient_type
+
+
+@pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
+def test_get_name_returns_name(ingredient_type, name, price):
+    ingredient = Ingredient(ingredient_type, name, price)
     assert ingredient.get_name() == name
+
+
+@pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
+def test_get_price_returns_price(ingredient_type, name, price):
+    ingredient = Ingredient(ingredient_type, name, price)
     assert ingredient.get_price() == price
+
+

@@ -2,20 +2,12 @@ from unittest.mock import Mock
 
 from praktikum.burger import Burger
 from praktikum.bun import Bun
-from praktikum.ingredient_types import INGREDIENT_TYPE_FILLING
+from praktikum.ingredient_types import INGREDIENT_TYPE_FILLING, INGREDIENT_TYPE_SAUCE
+from praktikum.database import Database
 from tests.data import Data
 
 
-def make_ingredient_mock(name: str, price: int, ingredient_type: str):
-    ing = Mock()
-    ing.get_name.return_value = name
-    ing.get_price.return_value = price
-    ing.get_type.return_value = ingredient_type
-    return ing
-
-
 class TestBurger:
-
     def test_set_buns_sets_bun(self):
         burger = Burger()
         bun = Bun(Data.BLACK_BUN, Data.BLACK_BUN_PRICE)
@@ -24,65 +16,77 @@ class TestBurger:
 
         assert burger.bun == bun
 
-    def test_add_ingredient_appends_to_list(self):
+    def test_add_ingredient_adds_to_list(self):
         burger = Burger()
-        ingredient = make_ingredient_mock("cutlet", 100, INGREDIENT_TYPE_FILLING)
+
+        ingredient = Mock()
+        ingredient.get_price.return_value = Data.CUTLET_PRICE
+        ingredient.get_name.return_value = Data.CUTLET
+        ingredient.get_type.return_value = INGREDIENT_TYPE_FILLING
 
         burger.add_ingredient(ingredient)
 
-        assert burger.ingredients == [ingredient]
+        assert len(burger.ingredients) == 1
+        assert burger.ingredients[0] == ingredient
 
-    def test_remove_ingredient_deletes_by_index(self):
+    def test_remove_ingredient_removes_by_index(self):
         burger = Burger()
-        ingredient = make_ingredient_mock("cutlet", 100, INGREDIENT_TYPE_FILLING)
-        burger.add_ingredient(ingredient)
+        ingredient = Mock()
 
+        burger.add_ingredient(ingredient)
         burger.remove_ingredient(0)
 
         assert burger.ingredients == []
 
     def test_move_ingredient_moves_item(self):
         burger = Burger()
-        first = make_ingredient_mock("cutlet", 100, INGREDIENT_TYPE_FILLING)
-        second = make_ingredient_mock("sausage", 300, INGREDIENT_TYPE_FILLING)
+
+        first = Mock()
+        first.get_price.return_value = Data.CUTLET_PRICE
+        first.get_name.return_value = Data.CUTLET
+        first.get_type.return_value = INGREDIENT_TYPE_FILLING
+
+        second = Mock()
+        second.get_price.return_value = Data.SAUSAGE_PRICE
+        second.get_name.return_value = Data.SAUSAGE
+        second.get_type.return_value = INGREDIENT_TYPE_FILLING
+
         burger.add_ingredient(first)
         burger.add_ingredient(second)
 
         burger.move_ingredient(0, 1)
 
-        assert len(burger.ingredients) == 2
-        assert burger.ingredients == [second, first]
+        assert burger.ingredients[0] == second
+        assert burger.ingredients[1] == first
 
-    def test_get_price_counts_bun_twice_plus_ingredients(self):
+    def test_get_price_returns_sum_of_bun_and_ingredients(self):
         burger = Burger()
-        bun = Mock()
-        bun.get_price.return_value = 100
-        burger.set_buns(bun)
+        db = Database()
 
-        burger.add_ingredient(make_ingredient_mock("a", 100, INGREDIENT_TYPE_FILLING))
-        burger.add_ingredient(make_ingredient_mock("b", 200, INGREDIENT_TYPE_FILLING))
-        burger.add_ingredient(make_ingredient_mock("c", 300, INGREDIENT_TYPE_FILLING))
+        burger.set_buns(db.available_buns()[0])  # black bun (100)
+        burger.add_ingredient(db.available_ingredients()[0])  # hot sauce (100)
+        burger.add_ingredient(db.available_ingredients()[1])  # sour cream (200)
+        burger.add_ingredient(db.available_ingredients()[2])  # chili sauce (300)
 
-        assert burger.get_price() == 800  # 100*2 + 100+200+300
+        assert burger.get_price() == 800
 
-    def test_get_receipt_formats_correctly(self):
+    def test_get_receipt_returns_expected_text(self):
         burger = Burger()
-        bun = Mock()
-        bun.get_name.return_value = "red bun"
-        bun.get_price.return_value = 300
-        burger.set_buns(bun)
+        db = Database()
 
-        burger.add_ingredient(make_ingredient_mock("hot sauce", 100, "SAUCE"))
-        burger.add_ingredient(make_ingredient_mock("sour cream", 200, "SAUCE"))
-        burger.add_ingredient(make_ingredient_mock("chili sauce", 300, "SAUCE"))
+        burger.set_buns(db.available_buns()[2])  # red bun (300)
+        burger.add_ingredient(db.available_ingredients()[0])  # hot sauce (100)
+        burger.add_ingredient(db.available_ingredients()[1])  # sour cream (200)
+        burger.add_ingredient(db.available_ingredients()[2])  # chili sauce (300)
 
-        expected = "\n".join([
-            "(==== red bun ====)",
-            "= sauce hot sauce =",
-            "= sauce sour cream =",
-            "= sauce chili sauce =",
-            "(==== red bun ====)\n",
-            "Price: 1200",
-        ])
+        expected = (
+            f"(==== {Data.RED_BUN} ====)\n"
+            f"= {INGREDIENT_TYPE_SAUCE.lower()} {Data.HOT_SAUCE} =\n"
+            f"= {INGREDIENT_TYPE_SAUCE.lower()} {Data.SOUR_CREAM} =\n"
+            f"= {INGREDIENT_TYPE_SAUCE.lower()} {Data.CHILLI_SAUCE} =\n"
+            f"(==== {Data.RED_BUN} ====)\n\n"
+            f"Price: 1200"
+        )
 
         assert burger.get_receipt() == expected
+

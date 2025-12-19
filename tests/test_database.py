@@ -1,8 +1,7 @@
 import pytest
 
 from praktikum.database import Database
-from praktikum.bun import Bun
-from praktikum.ingredient import Ingredient
+from praktikum.ingredient_types import INGREDIENT_TYPE_SAUCE, INGREDIENT_TYPE_FILLING
 from tests.data import Data
 
 
@@ -11,16 +10,22 @@ def database():
     return Database()
 
 
-def test_available_buns_returns_3_buns(database):
+def test_available_buns_returns_expected_buns(database):
     buns = database.available_buns()
-    assert len(buns) == 3
-    assert all(isinstance(b, Bun) for b in buns)
+    assert [(b.get_name(), b.get_price()) for b in buns] == [
+        (Data.BLACK_BUN, Data.BLACK_BUN_PRICE),
+        (Data.WHITE_BUN, Data.WHITE_BUN_PRICE),
+        (Data.RED_BUN, Data.RED_BUN_PRICE),
+    ]
 
-    assert buns[0].get_name() == Data.BLACK_BUN
-    assert buns[0].get_price() == Data.BLACK_BUN_PRICE
 
-
-def test_available_ingredients_returns_6_ingredients(database):
+def test_available_ingredients_returns_expected_ingredients(database):
     ingredients = database.available_ingredients()
-    assert len(ingredients) == 6
-    assert all(isinstance(i, Ingredient) for i in ingredients)
+    assert [(i.get_type(), i.get_name(), i.get_price()) for i in ingredients] == [
+        (INGREDIENT_TYPE_SAUCE, Data.HOT_SAUCE, Data.HOT_SAUCE_PRICE),
+        (INGREDIENT_TYPE_SAUCE, Data.SOUR_CREAM, Data.SOUR_CREAM_PRICE),
+        (INGREDIENT_TYPE_SAUCE, Data.CHILLI_SAUCE, Data.CHILLI_SAUCE_PRICE),
+        (INGREDIENT_TYPE_FILLING, Data.CUTLET, Data.CUTLET_PRICE),
+        (INGREDIENT_TYPE_FILLING, Data.DINOSAUR, Data.DINOSAUR_PRICE),
+        (INGREDIENT_TYPE_FILLING, Data.SAUSAGE, Data.SAUSAGE_PRICE),
+    ]
