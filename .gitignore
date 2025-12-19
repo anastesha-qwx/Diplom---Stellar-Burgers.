@@ -1,0 +1,28 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtualenv ---
+.venv/
+venv/
+env/
+
+# --- Pytest / coverage ---
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Allure (на всякий случай) ---
+allure-results/
+allure-report/
+.allure/
+
+# --- IDE ---
+.vscode/
+.idea/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
