@@ -15,29 +15,26 @@ INGREDIENT_CASES = [
 ]
 
 
-@pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-def test_init_sets_fields(ingredient_type, name, price):
-    ingredient = Ingredient(ingredient_type, name, price)
-    assert ingredient.type == ingredient_type
-    assert ingredient.name == name
-    assert ingredient.price == price
+class TestIngredient:
+    @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
+    def test_init_sets_fields(self, ingredient_type, name, price):
+        ingredient = Ingredient(ingredient_type, name, price)
 
+        assert ingredient.type == ingredient_type
+        assert ingredient.name == name
+        assert ingredient.price == price
 
-@pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-def test_get_type_returns_type(ingredient_type, name, price):
-    ingredient = Ingredient(ingredient_type, name, price)
-    assert ingredient.get_type() == ingredient_type
+    @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
+    def test_get_type_returns_type(self, ingredient_type, name, price):
+        ingredient = Ingredient(ingredient_type, name, price)
+        assert ingredient.get_type() == ingredient_type
 
+    @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
+    def test_get_name_returns_name(self, ingredient_type, name, price):
+        ingredient = Ingredient(ingredient_type, name, price)
+        assert ingredient.get_name() == name
 
-@pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-def test_get_name_returns_name(ingredient_type, name, price):
-    ingredient = Ingredient(ingredient_type, name, price)
-    assert ingredient.get_name() == name
-
-
-@pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-def test_get_price_returns_price(ingredient_type, name, price):
-    ingredient = Ingredient(ingredient_type, name, price)
-    assert ingredient.get_price() == price
-
-
+    @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
+    def test_get_price_returns_price(self, ingredient_type, name, price):
+        ingredient = Ingredient(ingredient_type, name, price)
+        assert ingredient.get_price() == price
