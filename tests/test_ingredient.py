@@ -1,40 +1,43 @@
-import pytest
-
-from praktikum.ingredient import Ingredient
-from praktikum.ingredient_types import INGREDIENT_TYPE_SAUCE, INGREDIENT_TYPE_FILLING
 from tests.data import Data
-
-
-INGREDIENT_CASES = [
-    (INGREDIENT_TYPE_SAUCE, Data.HOT_SAUCE, Data.HOT_SAUCE_PRICE),
-    (INGREDIENT_TYPE_SAUCE, Data.SOUR_CREAM, Data.SOUR_CREAM_PRICE),
-    (INGREDIENT_TYPE_SAUCE, Data.CHILLI_SAUCE, Data.CHILLI_SAUCE_PRICE),
-    (INGREDIENT_TYPE_FILLING, Data.CUTLET, Data.CUTLET_PRICE),
-    (INGREDIENT_TYPE_FILLING, Data.DINOSAUR, Data.DINOSAUR_PRICE),
-    (INGREDIENT_TYPE_FILLING, Data.SAUSAGE, Data.SAUSAGE_PRICE),
-]
-
+from praktikum.ingredient import Ingredient
+from praktikum.ingredient_types import (
+    INGREDIENT_TYPE_SAUCE as SAUCE,
+    INGREDIENT_TYPE_FILLING as FILLING,
+)
 
 class TestIngredient:
-    @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-    def test_init_sets_fields(self, ingredient_type, name, price):
-        ingredient = Ingredient(ingredient_type, name, price)
+    def test_ingredient_getters_sauce_hot(self):
+        ing = Ingredient(SAUCE, Data.HOT_SAUCE, Data.HOT_SAUCE_PRICE)
+        assert ing.get_type() == SAUCE
+        assert ing.get_name() == Data.HOT_SAUCE
+        assert ing.get_price() == Data.HOT_SAUCE_PRICE
 
-        assert ingredient.type == ingredient_type
-        assert ingredient.name == name
-        assert ingredient.price == price
+    def test_ingredient_getters_sauce_sour(self):
+        ing = Ingredient(SAUCE, Data.SOUR_CREAM, Data.SOUR_CREAM_PRICE)
+        assert ing.get_type() == SAUCE
+        assert ing.get_name() == Data.SOUR_CREAM
+        assert ing.get_price() == Data.SOUR_CREAM_PRICE
 
-    @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-    def test_get_type_returns_type(self, ingredient_type, name, price):
-        ingredient = Ingredient(ingredient_type, name, price)
-        assert ingredient.get_type() == ingredient_type
+    def test_ingredient_getters_sauce_chilli(self):
+        ing = Ingredient(SAUCE, Data.CHILLI_SAUCE, Data.CHILLI_SAUCE_PRICE)
+        assert ing.get_type() == SAUCE
+        assert ing.get_name() == Data.CHILLI_SAUCE
+        assert ing.get_price() == Data.CHILLI_SAUCE_PRICE
 
-    @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-    def test_get_name_returns_name(self, ingredient_type, name, price):
-        ingredient = Ingredient(ingredient_type, name, price)
-        assert ingredient.get_name() == name
+    def test_ingredient_getters_filling_cutlet(self):
+        ing = Ingredient(FILLING, Data.CUTLET, Data.CUTLET_PRICE)
+        assert ing.get_type() == FILLING
+        assert ing.get_name() == Data.CUTLET
+        assert ing.get_price() == Data.CUTLET_PRICE
 
-    @pytest.mark.parametrize("ingredient_type, name, price", INGREDIENT_CASES)
-    def test_get_price_returns_price(self, ingredient_type, name, price):
-        ingredient = Ingredient(ingredient_type, name, price)
-        assert ingredient.get_price() == price
+    def test_ingredient_getters_filling_dinosaur(self):
+        ing = Ingredient(FILLING, Data.DINOSAUR, Data.DINOSAUR_PRICE)
+        assert ing.get_type() == FILLING
+        assert ing.get_name() == Data.DINOSAUR
+        assert ing.get_price() == Data.DINOSAUR_PRICE
+
+    def test_ingredient_getters_filling_sausage(self):
+        ing = Ingredient(FILLING, Data.SAUSAGE, Data.SAUSAGE_PRICE)
+        assert ing.get_type() == FILLING
+        assert ing.get_name() == Data.SAUSAGE
+        assert ing.get_price() == Data.SAUSAGE_PRICE
